@@ -27,7 +27,9 @@ def check_approx_condition(c1_dict, inexact=False):
 
 def check_dist_condition(c2_dict, inexact=True):
     """Check distance condition for convergence."""
-    q = c2_dict["beta"] * (c2_dict["AtA"] @ c2_dict["x"] - c2_dict["At_Ck"])
+    q = c2_dict["beta"] * c2_dict["A"].T @ (
+        c2_dict["A"] @ c2_dict["x"] - (c2_dict["b"] + (1/c2_dict["beta"] * c2_dict["l"] - c2_dict["y"]))
+    )
     d = np.empty_like(c2_dict["x"])
     
     positive = c2_dict["x"] > 0

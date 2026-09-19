@@ -18,7 +18,4 @@ def generate_data(delta, m, n, s):
     ## b - inexact output 
     b = A @ x_bar + delta * eps
 
-    ## Pre-computing large quantities being used every iteration
-    AtA = A.T @ A
-
-    return AtA, A, x_bar, b
+    return A, x_bar, b

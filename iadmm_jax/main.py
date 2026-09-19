@@ -30,14 +30,14 @@ def main():
 
     for trial in range(1, 11):
         ## Method 1 - Gaussian matrix
-        AtA, A, x_bar, b = generate_data(delta, m, n, s)
+        A, x_bar, b = generate_data(delta, m, n, s)
 
         # Keep all methods in one table so every configuration is tested identically.
         methods = [
-            (method_names[0], lambda: inexact_admm_alg(A, AtA, b, 0.1, beta, xi_1, xi_2, m, n)),
-            (method_names[1], lambda: inexact_admm_alg(A, AtA, b, 0.5, beta, xi_1, xi_2, m, n)),
-            (method_names[2], lambda: inexact_admm_alg(A, AtA, b, 0.99, beta, xi_1, xi_2, m, n)),
-            (method_names[3], lambda: classic_admm_alg(A, AtA, b, beta, delta, xi_1, xi_2, m, n)),
+            (method_names[0], lambda: inexact_admm_alg(A, b, 0.1, beta, xi_1, xi_2, m, n)),
+            (method_names[1], lambda: inexact_admm_alg(A, b, 0.5, beta, xi_1, xi_2, m, n)),
+            (method_names[2], lambda: inexact_admm_alg(A, b, 0.99, beta, xi_1, xi_2, m, n)),
+            (method_names[3], lambda: classic_admm_alg(A, b, beta, delta, xi_1, xi_2, m, n)),
         ]
         for name, solve in methods:
             print(f"Trial {trial}/10: Running {name}\n")
@@ -75,3 +75,28 @@ def main():
 
 if __name__ == '__main__':
 	main()
+
+
+# ==============================================================================================================
+# Summary of results (10 trials)
+# Problem dimensions: m=256, n=2048, s=20
+# ==============================================================================================================
+# Method                                     Iterations     Relative error     Time (s)
+# --------------------------------------------------------------------------------------------------------------
+# Inexact ADMM (sigma_1=0.1)                       4.80           5.04e-03  22.2935
+# Inexact ADMM (sigma_1=0.5)                       4.80           5.04e-03  18.1362
+# Inexact ADMM (sigma_1=0.99)                      4.80           5.04e-03  17.2847
+# Classic ADMM                                     4.80           5.04e-03 135.5551
+# ==============================================================================================================
+
+# ==============================================================================================================
+# Summary of results (10 trials)
+# Problem dimensions: m=256, n=2048, s=30
+# ==============================================================================================================
+# Method                                     Iterations     Relative error     Time (s)
+# --------------------------------------------------------------------------------------------------------------
+# Inexact ADMM (sigma_1=0.1)                       4.20           4.33e-03  23.1663
+# Inexact ADMM (sigma_1=0.5)                       4.20           4.33e-03  17.6386
+# Inexact ADMM (sigma_1=0.99)                      4.20           4.33e-03  15.4264
+# Classic ADMM                                     4.20           4.33e-03 142.6475
+# ==============================================================================================================

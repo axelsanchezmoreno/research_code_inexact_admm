@@ -6,7 +6,7 @@ from fista import fista_const
 # Helper functions
 from conditions import check_fista_threshold
 
-def admm_alg(A, AtA, b, beta, xi_1, xi_2, m, n, inexact=False, sigma_1=None):
+def admm_alg(A, b, beta, xi_1, xi_2, m, n, inexact=False, sigma_1=None):
 
     ## Define x_p and y_p (primal) | l_d (dual)
     x_p, y_p, l_d = np.zeros(n), np.zeros(m), np.zeros(m)
@@ -18,16 +18,15 @@ def admm_alg(A, AtA, b, beta, xi_1, xi_2, m, n, inexact=False, sigma_1=None):
     L = beta * np.linalg.norm(A, ord=2) ** 2
     mu = np.sqrt(m) * np.linalg.norm(A.T @ b, ord=np.inf)
     
-    count = 1
+    count = 0
     fista_args = {
-        "A": A, "AtA": AtA,
-        "y": y_p,"l": l_d, "b": b, "w_1": w_1,
-        "beta": beta, "sigma_1": sigma_1 if inexact else None, "xi_2": xi_2, "L": L,
-        "i_k": 0
+        "A": A, "y": y_p,"l": l_d, "b": b, "w_1": w_1,
+        "beta": beta, "sigma_1": sigma_1 if inexact else None, "xi_2": xi_2, "L": L, "i_k": 0
     }
     
     ## ADMM iterations
     while True:
+        count += 1
         print(f"Iteration #{count}:")
 
         ## Keeping the initial result of x_p
@@ -47,13 +46,8 @@ def admm_alg(A, AtA, b, beta, xi_1, xi_2, m, n, inexact=False, sigma_1=None):
 
         ## Using a dictionary to contain the threshold arguments. 
         cond_args = {
-            "A": A,
-            "x_p": x_prev,
-            "y_p": y_prev,
-            "y_c": y_curr,
-            "b": b,
-            "beta": beta,
-            "xi_1": xi_1
+            "A": A, "x_p": x_prev, "y_p": y_prev, "y_c": y_curr,"b": b,
+            "beta": beta, "xi_1": xi_1
         }
         if check_fista_threshold(cond_args): break
         # print(f"Current count: {count}\n")
@@ -64,15 +58,14 @@ def admm_alg(A, AtA, b, beta, xi_1, xi_2, m, n, inexact=False, sigma_1=None):
         if inexact: w_1 = w_1 - beta * d_1
 
         ## Resetting arguments for FISTA algorithm
-        count += 1
         fista_args["y"] = y_p
         fista_args["l"] = l_d
         fista_args["w_1"] = w_1
 
     return x_p, count
 
-def inexact_admm_alg(A, AtA, b, sigma_1, beta, xi_1, xi_2, m, n):
-    return admm_alg(A, AtA, b, beta, xi_1, xi_2, m, n, inexact=True, sigma_1=sigma_1)
+def inexact_admm_alg(A, b, sigma_1, beta, xi_1, xi_2, m, n):
+    return admm_alg(A, b, beta, xi_1, xi_2, m, n, inexact=True, sigma_1=sigma_1)
 
-def classic_admm_alg(A, AtA, b, beta, delta, xi_1, xi_2, m, n):
-    return admm_alg(A, AtA, b, beta, xi_1, xi_2, m, n, inexact=False)
+def classic_admm_alg(A, b, beta, delta, xi_1, xi_2, m, n):
+    return admm_alg(A, b, beta, xi_1, xi_2, m, n, inexact=False)

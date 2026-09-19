@@ -4,13 +4,8 @@ from conditions import check_dist_condition, check_approx_condition
 class fista_const:
     def __init__(self, **kwargs):
         self.A = kwargs["A"]
-        self.AtA = kwargs["AtA"]
         self.y_p, self.l_d, self.w_1, self.b = kwargs["y"], kwargs["l"], kwargs["w_1"], kwargs["b"]
         self.beta, self.sigma_1, self.xi_2, self.L = kwargs["beta"], kwargs["sigma_1"], kwargs["xi_2"], kwargs["L"]
-
-        # Second term inside the smooth function
-        c_k = self.b + (1 / self.beta) * self.l_d - self.y_p
-        self.At_Ck = self.A.T @ c_k
 
         # Variables used in suggested speed-up in solving FISTA subproblem.
         self.tau, self.i_k = 0, int(kwargs["i_k"])
@@ -19,7 +14,7 @@ class fista_const:
         print(f"i_k, j_k, l_k: {self.i_k, self.j_k, self.l_k}")
 
     # Gradient of smooth term of objective function
-    def grad_func(self, curr_pt): return self.beta * (self.AtA @ curr_pt - self.At_Ck)
+    def grad_func(self, curr_pt): return self.beta * self.A.T @ (self.A @ curr_pt - (self.b + (1 / self.beta) * self.l_d - self.y_p)) # (self.AtA @ curr_pt - self.At_Ck)
 
     # Subgradient of L1-norm 
     def soft_shrinkage(self, curr_pt): return np.sign(curr_pt) * np.maximum(np.abs(curr_pt) - (1/self.L), 0)
@@ -49,7 +44,7 @@ class fista_const:
                         "sigma_1": self.sigma_1, "count": count
                     }
                     c2_dict = {
-                        "x": x_next, "A": self.A, "AtA": self.AtA, "At_Ck": self.At_Ck, "b": self.b, "y": self.y_p,
+                        "x": x_next, "A": self.A, "b": self.b, "y": self.y_p,
                         "l": self.l_d, "beta": self.beta, "xi_2": self.xi_2,
                         "count": count
                     }
@@ -59,7 +54,7 @@ class fista_const:
                         return d_step, x_next, count
                 else:
                     c2_dict = {
-                        "x": x_next, "A": self.A, "AtA": self.AtA, "At_Ck": self.At_Ck, "b": self.b, "y": self.y_p,
+                        "x": x_next, "A": self.A, "b": self.b, "y": self.y_p,
                         "l": self.l_d, "beta": self.beta, "xi_2": self.xi_2,
                         "count": count, "inexact": inexact
                     }
