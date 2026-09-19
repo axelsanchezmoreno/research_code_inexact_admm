@@ -40,7 +40,7 @@ class fista_const:
                     d_step = grad_x - self.L * (x_next - y_curr) - grad_y
                     c1_dict = {
                         "A": self.A, "b": self.b, "x": x_next, "d": d_step,
-                        "y": self.y_p, "l": self.y_p, "w_1": self.w_1, "beta": self.beta,
+                        "y": self.y_p, "l": self.l_d, "w_1": self.w_1, "beta": self.beta,
                         "sigma_1": self.sigma_1, "count": count
                     }
                     c2_dict = {
@@ -58,7 +58,7 @@ class fista_const:
                         "l": self.l_d, "beta": self.beta, "xi_2": self.xi_2,
                         "count": count, "inexact": inexact
                     }
-                    if check_dist_condition(c2_dict):
+                    if check_dist_condition(c2_dict, inexact):
                         print(f"\nFISTA condition met! | Count: {count}\n")
                         return x_next, count
 

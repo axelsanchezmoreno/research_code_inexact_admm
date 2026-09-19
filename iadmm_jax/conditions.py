@@ -30,7 +30,7 @@ def check_dist_condition(c2_dict, inexact=True):
     q = c2_dict["beta"] * c2_dict["A"].T @ (
         c2_dict["A"] @ c2_dict["x"] - (c2_dict["b"] + (1/c2_dict["beta"] * c2_dict["l"] - c2_dict["y"]))
     )
-    d = np.empty_like(c2_dict["x"])
+    d = np.empty_like(q, dtype=np.result_type(q, np.float64))
     
     positive = c2_dict["x"] > 0
     negative = c2_dict["x"] < 0

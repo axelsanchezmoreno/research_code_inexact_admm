@@ -8,6 +8,9 @@ from conditions import check_fista_threshold
 
 def admm_alg(A, b, beta, xi_1, xi_2, m, n, inexact=False, sigma_1=None):
 
+    if beta <= 0:
+        raise ValueError("beta must be positive")
+
     ## Define x_p and y_p (primal) | l_d (dual)
     x_p, y_p, l_d = np.zeros(n), np.zeros(m), np.zeros(m)
 
@@ -17,6 +20,10 @@ def admm_alg(A, b, beta, xi_1, xi_2, m, n, inexact=False, sigma_1=None):
     ## Define the constants - L and mu
     L = beta * np.linalg.norm(A, ord=2) ** 2
     mu = np.sqrt(m) * np.linalg.norm(A.T @ b, ord=np.inf)
+    if L == 0:
+        raise ValueError("A must have a nonzero spectral norm")
+    if mu == 0:
+        raise ValueError("A.T @ b must have a nonzero infinity norm")
     
     count = 0
     fista_args = {
@@ -30,7 +37,7 @@ def admm_alg(A, b, beta, xi_1, xi_2, m, n, inexact=False, sigma_1=None):
         print(f"Iteration #{count}:")
 
         ## Keeping the initial result of x_p
-        x_prev =  x_p
+        x_prev = x_p.copy()
 
         ## Solving x-subproblem to compute x^{k+1}
         fista_step = fista_const(**fista_args)
@@ -38,7 +45,7 @@ def admm_alg(A, b, beta, xi_1, xi_2, m, n, inexact=False, sigma_1=None):
         else: x_p, fista_args["i_k"] = fista_step.fista(inexact=False)
 
         ## Saving the previous y_p to use for termination of algorithm 1.
-        y_prev = y_p
+        y_prev = y_p.copy()
 
         ## Using closed-form solution to compute y^{k+1} 
         z = b + (1.0 / beta) * l_d - A @ x_p
