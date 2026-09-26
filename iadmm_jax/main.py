@@ -1,5 +1,6 @@
 import numpy as np
 import time
+import sys
 
 # Helper functions
 from algorithms import inexact_admm_alg, classic_admm_alg
@@ -7,7 +8,14 @@ from data_generation import generate_data
 
 def main():
     ## Dimensions and sparsity constant
-    s, m, n = 10, 256, 1024
+    if len(sys.argv) != 5:
+        print("Usage: python3 main.py <s> <m> <n> <matrix_def>")
+        sys.exit(1)
+
+    m = int(sys.argv[1])
+    n = int(sys.argv[2])
+    s = int(sys.argv[3])
+    matrix_def = int(sys.argv[4])
 
     ## Define the inexact solution
     beta = 1.5e3
@@ -30,7 +38,7 @@ def main():
 
     for trial in range(1, 11):
         ## Method 1 - Gaussian matrix
-        A, x_bar, b = generate_data(delta, m, n, s)
+        A, x_bar, b = generate_data(delta, m, n, s, matrix_def)
 
         # Keep all methods in one table so every configuration is tested identically.
         methods = [

@@ -1,6 +1,6 @@
 import numpy as np
 
-def generate_data(delta, m, n, s):
+def generate_data(delta, m, n, s, matrix_def):
     if m <= 0 or n <= 0:
         raise ValueError("m and n must be positive")
     if s < 1 or s > n:
@@ -8,9 +8,18 @@ def generate_data(delta, m, n, s):
     if delta < 0:
         raise ValueError("delta must be non-negative")
 
-    ## Method 1 - Gaussian matrix
-    A = np.random.normal(loc=0.0, scale=1.0, size=(m,n))
-    A /= np.linalg.norm(A, axis=0, keepdims=True)
+    ## Measurement matrix
+    if matrix_def == 1:
+        A = np.random.normal(loc=0.0, scale=1.0, size=(m, n))
+        A /= np.linalg.norm(A, axis=0, keepdims=True)
+    elif matrix_def == 2:
+        indices = np.arange(n)
+        dct = np.cos(np.pi * (indices[:, None] + 0.5) * indices[None, :] / n)
+        dct[0, :] /= np.sqrt(n)
+        dct[1:, :] *= np.sqrt(2.0 / n)
+        row_indices = np.random.choice(n, size=m, replace=False)
+        A = dct[row_indices, :]
+    else: raise ValueError("matrix_def must be 1 (gaussian) or 2 (dct)")
     
     ## x_bar - sparse vector
     x_bar = np.zeros(n)
