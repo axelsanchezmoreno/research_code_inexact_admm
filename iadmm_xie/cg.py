@@ -1,6 +1,6 @@
 import numpy as np
 
-from condition import cg_condition
+from conditions import cg_condition
 
 class cg_class:
     def __init__(self, A, D, c, y_p, l_d, mu, beta):

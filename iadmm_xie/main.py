@@ -16,14 +16,26 @@ def main():
     matrix_init = 'dct'               ## Specifying how the D matrix is defined
     method_def = 'chol'               ## Specify how we solve the x-subproblem ('cg' or 'chol')
 
-    # Defining the constants, mu, beta, and sigma
-    mu, beta, sigma = 0.01, 25, 0.5
+    ## Constants to algorithm 1 and algorithm 2 in the paper 'On inexact ADMMs with relative error criteria.'
+    mu = 1000
+    beta = 25
+    sigma = 0.1
+    eta = 0.7
+    alpha = 0.5
+    gamma = 1.0 - alpha
+    tau_sup = (2.0 * gamma - 1.0 + np.sqrt(4.0 * gamma ** 2.0 + 1.0)) / (2.0 * gamma)
+    tau = 0.5 * tau_sup
 
     print(f"Problem: m, n, s = {m}, {n}, {s}\n")
 
-    for trial in range(1, 11):
+    b = np.zeros(s)
+    w1 = np.zeros(n)
+    for trial in range(1, 11):  
+        print("*" * 60)
         A, D, x_sol, c = gen_data(m, n, s, matrix_init)
-        iadmm_algorithm(A, D, c, mu, beta, sigma, m, n, s, method_def)
+        iadmm_algorithm(A, D, w1, b, c, mu, beta, tau, sigma, eta, m, n, s, method_def)
+
+    print("*" * 60, "\n")
 
     # A, D = np.random.randn(m, n), np.random.randn(s, n)
     # c = np.random.randn(m)

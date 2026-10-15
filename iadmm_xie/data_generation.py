@@ -9,12 +9,14 @@ def gen_data(m, n, s, matrix_init):
     if matrix_init == 'gauss': 
         B = np.random.normal(loc=0.0, scale=1.0, size=(s, n))
         D, _ = np.linalg.qr(B)
+
     elif matrix_init == 'dct':
         indices = np.arange(n)
         dct = np.cos(np.pi * (indices[:, None] + 0.5) * indices / n)
         dct *= np.sqrt(2.0 / n)
         dct[0] /= np.sqrt(2.0)
         D = dct[np.random.permutation(n)[:s]]
+        
     else: raise ValueError("matrix-definition argument must be 'gauss' or 'dct' ")
 
     ## y_bar - sparse vector
