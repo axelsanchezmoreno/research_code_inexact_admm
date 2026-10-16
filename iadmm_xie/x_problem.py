@@ -7,8 +7,6 @@ from sfista import sfista_class as sfista
 from conditions import x_cond
 from subgradients import df_subgrad
 
-# method_init, A, D, x_p, y_p, l_d, w1, c, beta, tau, sigma, mu
-
 def x_subproblem(method_init, A, D, x_p, y_p, l_d, w1, c, beta, tau, sigma, mu, alpha):
 
     ## Choosing the technique used to solve the x-subproblem.
