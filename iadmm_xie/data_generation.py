@@ -7,8 +7,9 @@ def gen_data(m, n, s, matrix_init):
     A /= np.linalg.norm(A, axis=0, keepdims=True)
 
     if matrix_init == 'gauss': 
-        B = np.random.normal(loc=0.0, scale=1.0, size=(s, n))
-        D, _ = np.linalg.qr(B)
+        B = np.random.normal(loc=0.0, scale=1.0, size=(n, s))
+        Q, _ = np.linalg.qr(B, mode='reduced')
+        D = Q.T
 
     elif matrix_init == 'dct':
         indices = np.arange(n)

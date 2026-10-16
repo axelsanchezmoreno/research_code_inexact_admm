@@ -5,9 +5,9 @@ def cg_condition(C, x, b):
     den = max(np.linalg.norm(b, ord=2), 1.0)
     return (num / den) < 1e-8
 
-def x_cond(D, x_p, y_p, w1, d, tau, sigma, beta):
+def x_cond(D, x_p, y_p, w1, d, tau, sigma, beta, alpha):
     lhs = (2.0 / beta) * np.abs((w1 - x_p).T @ d)
-    rhs = sigma * np.linalg.norm(D @ x_p - y_p, ord=2) ** 2
+    rhs = sigma * alpha * np.linalg.norm(D @ x_p - y_p, ord=2) ** 2
     return (lhs + tau * np.linalg.norm(d) <= rhs)
 
 def inexact_error(D, x_p, y_p, y_n, beta):

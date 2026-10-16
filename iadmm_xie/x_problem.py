@@ -9,7 +9,7 @@ from subgradients import df_subgrad
 
 # method_init, A, D, x_p, y_p, l_d, w1, c, beta, tau, sigma, mu
 
-def x_subproblem(method_init, A, D, x_p, y_p, l_d, w1, c, beta, tau, sigma, mu):
+def x_subproblem(method_init, A, D, x_p, y_p, l_d, w1, c, beta, tau, sigma, mu, alpha):
 
     ## Choosing the technique used to solve the x-subproblem.
     method_obj = None
@@ -25,7 +25,8 @@ def x_subproblem(method_init, A, D, x_p, y_p, l_d, w1, c, beta, tau, sigma, mu):
     ## Computing d^{k_1}
     d = df_subgrad(A, D, x_p, y_p, l_d, c, beta, mu)
 
-    result = x_cond(D, x_p, y_p, w1, d, tau, sigma, beta)
+    result = x_cond(D, x_p, y_p, w1, d, tau, sigma, beta, alpha)
+
     print(f"Condition 12 result: {result}")
 
     return x_p, d
