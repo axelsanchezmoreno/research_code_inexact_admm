@@ -10,8 +10,11 @@ from data_generation import gen_data
 from algorithm import iadmm_algorithm
 
 def main():
-    if len(sys.argv) != 2 or sys.argv[1] not in ("1", "2"):
-        print(f"Usage: python3 {sys.argv[0]} 1|2")
+    if (len(sys.argv) != 4
+        or sys.argv[1] not in ("1", "2")
+        or sys.argv[2] not in ("gauss", "dct")
+        or sys.argv[3] not in ("cg", "chol")):
+        print(f"Usage: python3 {sys.argv[0]} 1|2 gauss|dct cg|chol")
         sys.exit(1)
 
     algorithm_number = int(sys.argv[1])
@@ -20,8 +23,11 @@ def main():
     m, n = 2048, 256
     s = int(np.round(0.1 * m))
 
-    matrix_init = 'dct'               ## Specifying how the D matrix is defined
-    method_def = 'chol'                   ## Specify how we solve the x-subproblem ('cg' or 'chol')
+    ## Specifying how the D matrix is defined ('gauss' or 'dct')
+    matrix_init = sys.argv[2]               
+
+    ## Specify how we solve the x-subproblem ('cg' or 'chol')
+    method_def = sys.argv[3]                   
 
     ## Constants to algorithm 1 and algorithm 2 in the paper 'On inexact ADMMs with relative error criteria.'
     mu = 0.125
@@ -50,26 +56,6 @@ def main():
         iadmm_algorithm(A, D, w1, b, c, alpha, mu, beta, tau, sigma, eta, m, n, s, method_def)
 
     print("*" * 60, "\n")
-
-    # A, D = np.random.randn(m, n), np.random.randn(s, n)
-    # c = np.random.randn(m)
-    # # Defining the unknown variables
-    # x_p, y_p, l_d = np.zeros(n), np.random.randn(s), np.random.randn(s)
-
-    # cg_dict = {
-    #     "A" : A,
-    #     "D" : D,
-    #     "y" : y_p,
-    #     "l" : l_d,
-    #     "c" : c,
-    #     "mu" : mu,
-    #     "beta" : beta, 
-    #     "sigma" : sigma
-    # }
-
-    # # Executing the CG method
-    # conjugate_class = cg_class(**cg_dict)
-    # x_p = conjugate_class.cg_method(x_p)
 
 if __name__ == '__main__':
 	main()

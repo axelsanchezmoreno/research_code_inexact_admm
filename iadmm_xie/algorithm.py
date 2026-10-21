@@ -2,6 +2,7 @@ import numpy as np
 import time
 
 from x_problem import x_subproblem
+from y_problem import y_subproblem
 from conditions import inexact_error
 
 def iadmm_algorithm(A, D, w1, b, c, alpha, mu, beta, tau, sigma, eta, m, n, s, method_init):
@@ -13,7 +14,7 @@ def iadmm_algorithm(A, D, w1, b, c, alpha, mu, beta, tau, sigma, eta, m, n, s, m
         x_p, d = x_subproblem(method_init, A, D, x_p, y_p, l_d, w1, c, beta, tau, sigma, mu, alpha)
 
         ## Step 2 - Solving y-subproblem
-        y_n = np.sign(D @ x_p - (l_d / beta)) * np.maximum(np.abs(D @ x_p - (l_d / beta)) - (1/beta), 0)
+        y_n = y_subproblem(D, x_p, l_d, beta)
 
         error = inexact_error(D, x_p, y_p, y_n, beta)
         if error < eta:

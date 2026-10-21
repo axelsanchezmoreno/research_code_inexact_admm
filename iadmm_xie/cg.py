@@ -5,7 +5,7 @@ from conditions import cg_condition
 class cg_class:
     def __init__(self, A, D, c, y_p, l_d, mu, beta):
         self.C = A.T @ A + mu * beta * D.T @ D
-        self.b = mu * D.T @ (l_d * y_p) + A.T @ c
+        self.b = mu * D.T @ (l_d + beta * y_p) + A.T @ c
 
     def execute(self, x_p): 
         r_curr = self.C @ x_p - self.b
